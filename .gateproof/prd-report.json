@@ -7,7 +7,7 @@
       "title": "Repo has required files: package.json, README.md, .github/workflows/loop.yml",
       "gateFile": "./gates/repo-structure.gate.ts",
       "status": "success",
-      "durationMs": 2
+      "durationMs": 1
     },
     {
       "id": "loop-script",
@@ -21,29 +21,29 @@
       "title": "Push to main triggers loop.yml workflow that heals until complete",
       "gateFile": "./gates/ci-workflow.gate.ts",
       "status": "success",
-      "durationMs": 52
+      "durationMs": 56
     },
     {
       "id": "pause-resume",
       "title": ".gateproof/PAUSED file stops the loop, deleting it resumes",
       "gateFile": "./gates/pause-resume.gate.ts",
       "status": "success",
-      "durationMs": 1528
+      "durationMs": 10011
     },
     {
       "id": "self-healing",
       "title": "Repo can heal itself: intentionally break something, loop fixes it",
       "gateFile": "./gates/self-healing.gate.ts",
       "status": "success",
-      "durationMs": 2
+      "durationMs": 3
     },
     {
       "id": "greeting-module",
       "title": "src/greeting.ts exports a greet(name) function that returns 'Hello, {name}!'",
       "gateFile": "./gates/greeting.gate.ts",
       "status": "success",
-      "durationMs": 2
+      "durationMs": 1
     }
   ],
-  "totalDurationMs": 1587
+  "totalDurationMs": 10074
 }
