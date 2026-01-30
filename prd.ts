@@ -42,6 +42,12 @@ export const prd = definePrd({
       title: "Repo can heal itself: intentionally break something, loop fixes it",
       gateFile: "./gates/self-healing.gate.ts",
       dependsOn: ["ci-workflow", "pause-resume"]
+    },
+    {
+      id: "greeting-module",
+      title: "src/greeting.ts exports a greet(name) function that returns 'Hello, {name}!'",
+      gateFile: "./gates/greeting.gate.ts",
+      dependsOn: ["repo-structure"]
     }
   ]
 });
