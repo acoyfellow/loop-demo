@@ -7,7 +7,7 @@
       "title": "Repo has required files: package.json, README.md, .github/workflows/loop.yml",
       "gateFile": "./gates/repo-structure.gate.ts",
       "status": "success",
-      "durationMs": 1
+      "durationMs": 2
     },
     {
       "id": "loop-script",
@@ -21,14 +21,14 @@
       "title": "Push to main triggers loop.yml workflow that heals until complete",
       "gateFile": "./gates/ci-workflow.gate.ts",
       "status": "success",
-      "durationMs": 51
+      "durationMs": 48
     },
     {
       "id": "pause-resume",
       "title": ".gateproof/PAUSED file stops the loop, deleting it resumes",
       "gateFile": "./gates/pause-resume.gate.ts",
       "status": "success",
-      "durationMs": 10017
+      "durationMs": 10016
     },
     {
       "id": "self-healing",
@@ -42,11 +42,11 @@
       "title": "src/greeting.ts exports a greet(name) function that returns 'Hello, {name}!'",
       "gateFile": "./gates/greeting.gate.ts",
       "status": "failed",
-      "durationMs": 1,
+      "durationMs": 0,
       "error": {
         "name": "Error",
-        "message": "src/greeting.ts does not exist. Create it with: export function greet(name: string): string { return `Hello, ${name}!`; }",
-        "stack": "Error: src/greeting.ts does not exist. Create it with: export function greet(name: string): string { return `Hello, ${name}!`; }\n    at run (/home/runner/work/loop-demo/loop-demo/gates/greeting.gate.ts:14:18)\n    at runPrd (/home/runner/work/loop-demo/loop-demo/node_modules/gateproof/dist/prd/runner.js:130:35)"
+        "message": "Failed to import src/greeting.ts: Cannot find module './src/greeting.ts' from '/home/runner/work/loop-demo/loop-demo/gates/greeting.gate.ts'",
+        "stack": "Error: Failed to import src/greeting.ts: Cannot find module './src/greeting.ts' from '/home/runner/work/loop-demo/loop-demo/gates/greeting.gate.ts'\n    at run (/home/runner/work/loop-demo/loop-demo/gates/greeting.gate.ts:54:18)\n    at async runPrd (/home/runner/work/loop-demo/loop-demo/node_modules/gateproof/dist/prd/runner.js:130:35)"
       }
     }
   ],
@@ -55,5 +55,5 @@
     "title": "src/greeting.ts exports a greet(name) function that returns 'Hello, {name}!'",
     "gateFile": "./gates/greeting.gate.ts"
   },
-  "totalDurationMs": 10074
+  "totalDurationMs": 10069
 }

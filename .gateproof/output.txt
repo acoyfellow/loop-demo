@@ -56,10 +56,11 @@ Checking healing infrastructure...
 ✓ Self-healing infrastructure complete
 
 --- greeting-module: src/greeting.ts exports a greet(name) function that returns 'Hello, {name}!'
+✓ src/greeting.ts exists
 ✓ repo-structure: Repo has required files: package.json, README.md, .github/workflows/loop.yml
 ✓ loop-script: bun run loop executes the healing loop with deja memory
 ✓ ci-workflow: Push to main triggers loop.yml workflow that heals until complete
 ✓ pause-resume: .gateproof/PAUSED file stops the loop, deleting it resumes
 ✓ self-healing: Repo can heal itself: intentionally break something, loop fixes it
 ✗ greeting-module: src/greeting.ts exports a greet(name) function that returns 'Hello, {name}!'
-  Error: src/greeting.ts does not exist. Create it with: export function greet(name: string): string { return `Hello, ${name}!`; }
+  Error: Failed to import src/greeting.ts: Cannot find module './src/greeting.ts' from '/home/runner/work/loop-demo/loop-demo/gates/greeting.gate.ts'
