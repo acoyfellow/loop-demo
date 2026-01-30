@@ -1,0 +1,17 @@
+{
+  "name": "loop-demo",
+  "version": "0.1.0",
+  "type": "module",
+  "description": "A self-healing repo built with gateproof + deja",
+  "scripts": {
+    "loop": "./scripts/loop.sh",
+    "prd": "bun run prd.ts",
+    "gate": "bun run prd.ts"
+  },
+  "dependencies": {
+    "gateproof": "^0.2.2"
+  },
+  "devDependencies": {
+    "yaml": "^2.3.4"
+  }
+}

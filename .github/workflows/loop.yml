@@ -1,0 +1,99 @@
+name: Healing Loop
+
+# Failure until success. Runs until all gates pass.
+# PAUSED is your kill switch.
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+    inputs:
+      agent:
+        description: 'Agent: opencode, claude, openai'
+        default: 'opencode'
+      force:
+        description: 'Run even if PAUSED'
+        default: 'false'
+
+jobs:
+  heal:
+    runs-on: ubuntu-latest
+    if: github.actor != 'github-actions[bot]' && github.actor != 'gateproof-bot'
+    
+    permissions:
+      contents: write
+    
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      
+      - name: Check PAUSED
+        id: paused
+        run: |
+          if [[ -f .gateproof/PAUSED ]] && [[ "${{ github.event.inputs.force }}" != "true" ]]; then
+            echo "paused=true" >> $GITHUB_OUTPUT
+          else
+            echo "paused=false" >> $GITHUB_OUTPUT
+          fi
+      
+      - name: Setup
+        if: steps.paused.outputs.paused != 'true'
+        uses: oven-sh/setup-bun@v1
+      
+      - name: Install
+        if: steps.paused.outputs.paused != 'true'
+        run: bun install
+      
+      - name: Git config
+        if: steps.paused.outputs.paused != 'true'
+        run: |
+          git config user.name "gateproof-bot"
+          git config user.email "gateproof-bot@users.noreply.github.com"
+      
+      - name: Heal
+        if: steps.paused.outputs.paused != 'true'
+        env:
+          OPENCODE_ZEN_API_KEY: ${{ secrets.OPENCODE_ZEN_API_KEY }}
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          LOOP_AGENT: ${{ github.event.inputs.agent || 'opencode' }}
+        run: |
+          mkdir -p .gateproof
+          
+          # CI runs limited iterations, push continues the loop
+          for i in {1..5}; do
+            [[ -f .gateproof/PAUSED ]] && exit 0
+            
+            echo "=== CI Iteration $i ==="
+            
+            if bun run prd.ts --report .gateproof/prd-report.json; then
+              echo "✅ All gates passed!"
+              exit 0
+            fi
+            
+            # TODO: Integrate agent healing here
+            # For now, just track iteration
+            ITER=$(cat .gateproof/iteration 2>/dev/null || echo 0)
+            echo $((ITER + 1)) > .gateproof/iteration
+            
+          done
+          
+          echo "CI batch done. Push triggers next."
+      
+      - name: Commit state
+        if: steps.paused.outputs.paused != 'true'
+        run: |
+          git add .gateproof/ || true
+          git commit -m "heal: iteration $(cat .gateproof/iteration 2>/dev/null || echo '?')" || true
+          git push || true
+      
+      - name: Summary
+        if: always()
+        run: |
+          echo "## Healing Loop" >> $GITHUB_STEP_SUMMARY
+          if [[ -f .gateproof/PAUSED ]]; then
+            echo "⏸️ PAUSED" >> $GITHUB_STEP_SUMMARY
+          elif [[ -f .gateproof/prd-report.json ]]; then
+            cat .gateproof/prd-report.json >> $GITHUB_STEP_SUMMARY || true
+          fi
