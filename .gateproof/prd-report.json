@@ -7,7 +7,7 @@
       "title": "Repo has required files: package.json, README.md, .github/workflows/loop.yml",
       "gateFile": "./gates/repo-structure.gate.ts",
       "status": "success",
-      "durationMs": 3
+      "durationMs": 1
     },
     {
       "id": "loop-script",
@@ -21,21 +21,21 @@
       "title": "Push to main triggers loop.yml workflow that heals until complete",
       "gateFile": "./gates/ci-workflow.gate.ts",
       "status": "success",
-      "durationMs": 50
+      "durationMs": 51
     },
     {
       "id": "pause-resume",
       "title": ".gateproof/PAUSED file stops the loop, deleting it resumes",
       "gateFile": "./gates/pause-resume.gate.ts",
       "status": "success",
-      "durationMs": 10016
+      "durationMs": 10017
     },
     {
       "id": "self-healing",
       "title": "Repo can heal itself: intentionally break something, loop fixes it",
       "gateFile": "./gates/self-healing.gate.ts",
       "status": "success",
-      "durationMs": 3
+      "durationMs": 2
     },
     {
       "id": "greeting-module",
