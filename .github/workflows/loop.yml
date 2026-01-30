@@ -57,29 +57,73 @@ jobs:
           OPENCODE_ZEN_API_KEY: ${{ secrets.OPENCODE_ZEN_API_KEY }}
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
-          LOOP_AGENT: ${{ github.event.inputs.agent || 'opencode' }}
         run: |
           mkdir -p .gateproof
           
-          # CI runs limited iterations, push continues the loop
-          for i in {1..5}; do
-            [[ -f .gateproof/PAUSED ]] && exit 0
+          # Determine API key
+          API_KEY="${OPENCODE_ZEN_API_KEY:-${ANTHROPIC_API_KEY:-$OPENAI_API_KEY}}"
+          if [[ -z "$API_KEY" ]]; then
+            echo "No API key found"
+            exit 1
+          fi
+          
+          # CI runs limited iterations
+          for i in {1..3}; do
+            [[ -f .gateproof/PAUSED ]] && { echo "PAUSED"; exit 0; }
             
-            echo "=== CI Iteration $i ==="
+            ITER=$(cat .gateproof/iteration 2>/dev/null || echo 0)
+            ITER=$((ITER + 1))
+            echo "$ITER" > .gateproof/iteration
+            echo "=== Iteration $ITER ==="
             
-            if bun run prd.ts --report .gateproof/prd-report.json; then
+            # Run PRD
+            if bun run prd.ts --report .gateproof/prd-report.json 2>&1 | tee .gateproof/output.txt; then
               echo "✅ All gates passed!"
               exit 0
             fi
             
-            # TODO: Integrate agent healing here
-            # For now, just track iteration
-            ITER=$(cat .gateproof/iteration 2>/dev/null || echo 0)
-            echo $((ITER + 1)) > .gateproof/iteration
+            # Get failure output
+            FAILURE=$(cat .gateproof/output.txt | tail -50)
+            PRD_CONTENT=$(cat prd.ts)
             
+            # Call OpenCode Zen to fix
+            echo "Calling agent to fix..."
+            RESPONSE=$(curl -s -X POST "https://opencode.ai/zen/v1/chat/completions" \
+              -H "Authorization: Bearer $API_KEY" \
+              -H "Content-Type: application/json" \
+              -d "$(jq -n \
+                --arg prd "$PRD_CONTENT" \
+                --arg failure "$FAILURE" \
+                '{
+                  model: "big-pickle",
+                  messages: [{
+                    role: "user",
+                    content: "Fix this gateproof PRD failure. Output ONLY the file contents needed, no explanation.\n\nPRD:\n\($prd)\n\nFailure:\n\($failure)\n\nCreate or fix the file to make the gate pass. Output format:\n---FILE: path/to/file.ts---\nfile contents here\n---END---"
+                  }],
+                  max_tokens: 2000
+                }')")
+            
+            # Parse response and write files
+            CONTENT=$(echo "$RESPONSE" | jq -r '.choices[0].message.content // empty')
+            if [[ -n "$CONTENT" ]]; then
+              echo "$CONTENT" | while IFS= read -r line; do
+                if [[ "$line" =~ ^---FILE:\ (.+)---$ ]]; then
+                  CURRENT_FILE="${BASH_REMATCH[1]}"
+                  mkdir -p "$(dirname "$CURRENT_FILE")"
+                  > "$CURRENT_FILE"
+                elif [[ "$line" == "---END---" ]]; then
+                  echo "Wrote: $CURRENT_FILE"
+                  CURRENT_FILE=""
+                elif [[ -n "$CURRENT_FILE" ]]; then
+                  echo "$line" >> "$CURRENT_FILE"
+                fi
+              done
+            fi
+            
+            sleep 2
           done
           
-          echo "CI batch done. Push triggers next."
+          echo "CI batch done."
       
       - name: Commit state
         if: steps.paused.outputs.paused != 'true'
