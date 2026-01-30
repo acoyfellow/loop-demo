@@ -7,28 +7,28 @@
       "title": "Repo has required files: package.json, README.md, .github/workflows/loop.yml",
       "gateFile": "./gates/repo-structure.gate.ts",
       "status": "success",
-      "durationMs": 1
+      "durationMs": 3
     },
     {
       "id": "loop-script",
       "title": "bun run loop executes the healing loop with deja memory",
       "gateFile": "./gates/loop-script.gate.ts",
       "status": "success",
-      "durationMs": 3
+      "durationMs": 1
     },
     {
       "id": "ci-workflow",
       "title": "Push to main triggers loop.yml workflow that heals until complete",
       "gateFile": "./gates/ci-workflow.gate.ts",
       "status": "success",
-      "durationMs": 53
+      "durationMs": 50
     },
     {
       "id": "pause-resume",
       "title": ".gateproof/PAUSED file stops the loop, deleting it resumes",
       "gateFile": "./gates/pause-resume.gate.ts",
       "status": "success",
-      "durationMs": 10008
+      "durationMs": 10016
     },
     {
       "id": "self-healing",
@@ -42,7 +42,7 @@
       "title": "src/greeting.ts exports a greet(name) function that returns 'Hello, {name}!'",
       "gateFile": "./gates/greeting.gate.ts",
       "status": "failed",
-      "durationMs": 0,
+      "durationMs": 1,
       "error": {
         "name": "Error",
         "message": "src/greeting.ts does not exist. Create it with: export function greet(name: string): string { return `Hello, ${name}!`; }",
@@ -55,5 +55,5 @@
     "title": "src/greeting.ts exports a greet(name) function that returns 'Hello, {name}!'",
     "gateFile": "./gates/greeting.gate.ts"
   },
-  "totalDurationMs": 10068
+  "totalDurationMs": 10074
 }

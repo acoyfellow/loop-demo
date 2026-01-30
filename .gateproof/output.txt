@@ -1,0 +1,65 @@
+
+--- repo-structure: Repo has required files: package.json, README.md, .github/workflows/loop.yml
+✓ package.json
+✓ README.md
+✓ .github/workflows/loop.yml
+
+✓ All required files valid
+
+--- loop-script: bun run loop executes the healing loop with deja memory
+✓ scripts/loop.sh is executable
+✓ Has bash shebang
+✓ Has deja memory injection
+✓ Has PAUSED check
+✓ Has PRD execution
+✓ package.json wired correctly
+
+✓ Loop script valid
+
+--- ci-workflow: Push to main triggers loop.yml workflow that heals until complete
+✓ Triggers on push to main
+✓ Has workflow_dispatch
+✓ Has jobs: heal
+✓ References API key secrets
+✓ Skips bot commits
+
+✓ CI workflow valid
+
+--- pause-resume: .gateproof/PAUSED file stops the loop, deleting it resumes
+Test 1: Loop exits when PAUSED...
+✓ Loop exits gracefully when PAUSED
+
+Test 2: Loop attempts to run without PAUSED...
+✓ Loop attempts execution without PAUSED
+
+✓ Pause/resume mechanism works
+
+--- self-healing: Repo can heal itself: intentionally break something, loop fixes it
+Checking prd.ts...
+✓ prd.ts defines stories
+
+Checking gate files...
+✓ gates/repo-structure.gate.ts
+✓ gates/loop-script.gate.ts
+✓ gates/ci-workflow.gate.ts
+✓ gates/pause-resume.gate.ts
+✓ gates/self-healing.gate.ts
+✓ gates/greeting.gate.ts
+
+Checking gateproof dependency...
+✓ gateproof in dependencies
+
+Checking healing infrastructure...
+✓ scripts/loop.sh
+✓ .github/workflows/loop.yml
+
+✓ Self-healing infrastructure complete
+
+--- greeting-module: src/greeting.ts exports a greet(name) function that returns 'Hello, {name}!'
+✓ repo-structure: Repo has required files: package.json, README.md, .github/workflows/loop.yml
+✓ loop-script: bun run loop executes the healing loop with deja memory
+✓ ci-workflow: Push to main triggers loop.yml workflow that heals until complete
+✓ pause-resume: .gateproof/PAUSED file stops the loop, deleting it resumes
+✓ self-healing: Repo can heal itself: intentionally break something, loop fixes it
+✗ greeting-module: src/greeting.ts exports a greet(name) function that returns 'Hello, {name}!'
+  Error: src/greeting.ts does not exist. Create it with: export function greet(name: string): string { return `Hello, ${name}!`; }
