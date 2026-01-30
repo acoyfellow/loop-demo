@@ -1,0 +1,42 @@
+{
+  "version": "1",
+  "success": true,
+  "stories": [
+    {
+      "id": "repo-structure",
+      "title": "Repo has required files: package.json, README.md, .github/workflows/loop.yml",
+      "gateFile": "./gates/repo-structure.gate.ts",
+      "status": "success",
+      "durationMs": 2
+    },
+    {
+      "id": "loop-script",
+      "title": "bun run loop executes the healing loop with deja memory",
+      "gateFile": "./gates/loop-script.gate.ts",
+      "status": "success",
+      "durationMs": 1
+    },
+    {
+      "id": "ci-workflow",
+      "title": "Push to main triggers loop.yml workflow that heals until complete",
+      "gateFile": "./gates/ci-workflow.gate.ts",
+      "status": "success",
+      "durationMs": 44
+    },
+    {
+      "id": "pause-resume",
+      "title": ".gateproof/PAUSED file stops the loop, deleting it resumes",
+      "gateFile": "./gates/pause-resume.gate.ts",
+      "status": "success",
+      "durationMs": 10015
+    },
+    {
+      "id": "self-healing",
+      "title": "Repo can heal itself: intentionally break something, loop fixes it",
+      "gateFile": "./gates/self-healing.gate.ts",
+      "status": "success",
+      "durationMs": 3
+    }
+  ],
+  "totalDurationMs": 10065
+}
