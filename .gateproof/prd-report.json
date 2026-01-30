@@ -1,6 +1,6 @@
 {
   "version": "1",
-  "success": false,
+  "success": true,
   "stories": [
     {
       "id": "repo-structure",
@@ -21,14 +21,14 @@
       "title": "Push to main triggers loop.yml workflow that heals until complete",
       "gateFile": "./gates/ci-workflow.gate.ts",
       "status": "success",
-      "durationMs": 48
+      "durationMs": 52
     },
     {
       "id": "pause-resume",
       "title": ".gateproof/PAUSED file stops the loop, deleting it resumes",
       "gateFile": "./gates/pause-resume.gate.ts",
       "status": "success",
-      "durationMs": 10016
+      "durationMs": 1528
     },
     {
       "id": "self-healing",
@@ -41,19 +41,9 @@
       "id": "greeting-module",
       "title": "src/greeting.ts exports a greet(name) function that returns 'Hello, {name}!'",
       "gateFile": "./gates/greeting.gate.ts",
-      "status": "failed",
-      "durationMs": 0,
-      "error": {
-        "name": "Error",
-        "message": "Failed to import src/greeting.ts: Cannot find module './src/greeting.ts' from '/home/runner/work/loop-demo/loop-demo/gates/greeting.gate.ts'",
-        "stack": "Error: Failed to import src/greeting.ts: Cannot find module './src/greeting.ts' from '/home/runner/work/loop-demo/loop-demo/gates/greeting.gate.ts'\n    at run (/home/runner/work/loop-demo/loop-demo/gates/greeting.gate.ts:54:18)\n    at async runPrd (/home/runner/work/loop-demo/loop-demo/node_modules/gateproof/dist/prd/runner.js:130:35)"
-      }
+      "status": "success",
+      "durationMs": 2
     }
   ],
-  "failedStory": {
-    "id": "greeting-module",
-    "title": "src/greeting.ts exports a greet(name) function that returns 'Hello, {name}!'",
-    "gateFile": "./gates/greeting.gate.ts"
-  },
-  "totalDurationMs": 10069
+  "totalDurationMs": 1587
 }
