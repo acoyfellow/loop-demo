@@ -85,10 +85,10 @@ jobs:
           
           echo "CI batch done."
       
-      - name: Commit state
+      - name: Commit changes
         if: steps.paused.outputs.paused != 'true'
         run: |
-          git add .gateproof/ || true
+          git add .gateproof/ src/ || true
           git commit -m "heal: iteration $(cat .gateproof/iteration 2>/dev/null || echo '?')" || true
           git push || true
       
