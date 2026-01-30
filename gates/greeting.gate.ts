@@ -5,8 +5,6 @@
 import { existsSync } from "node:fs";
 
 export async function run() {
-  const modulePath = "./src/greeting.ts";
-  
   // File must exist
   if (!existsSync("src/greeting.ts")) {
     return { 
@@ -18,6 +16,8 @@ export async function run() {
   
   // Import and test the function
   try {
+    // Use absolute path for reliable import
+    const modulePath = `${process.cwd()}/src/greeting.ts`;
     const mod = await import(modulePath);
     
     if (typeof mod.greet !== "function") {
