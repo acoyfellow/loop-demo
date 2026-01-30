@@ -70,10 +70,12 @@ jobs:
             echo "=== Iteration $ITER ==="
             
             # Run PRD
+            set -o pipefail
             if bun run prd.ts --report .gateproof/prd-report.json 2>&1 | tee .gateproof/output.txt; then
               echo "✅ All gates passed!"
               exit 0
             fi
+            set +o pipefail
             
             # Call agent to fix
             bun run scripts/heal.ts || echo "Heal script failed"
